@@ -1,0 +1,202 @@
+<html>
+<head>
+    <link href="/css/app.css" rel="stylesheet">
+    <link href="/js/apsp.js" rel="stylesheet">
+    <link href="{{ asset('css/app.css')}}" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="{{ asset('js/custom.js') }}"></script>
+	<script type="text/javascript">
+	function show(){document.getElementById('area').style.display='block';}
+	function hide(){document.getElementById('area').style.display='none';}
+	function shows(){document.getElementById('area1').style.display='block';}
+	function hides(){document.getElementById('area1').style.display='none';}
+	</script>
+</head>
+<body>
+
+<div class="container">
+    <div class="row form-group">
+        <div class="col-xs-12">
+            <ul class="nav nav-pills nav-justified thumbnail setup-panel">
+                <li class="active"><a href="#step-1">
+                    <h4 class="list-group-item-heading">Add Project</h4>
+                    <p class="list-group-item-text"></p>
+                </a></li>
+                <li class="disabled"><a href="#step-2">
+                    <h4 class="list-group-item-heading">Members</h4>
+                    <p class="list-group-item-text"></p>
+                </a></li>
+                <li class="disabled"><a href="#step-3">
+                    <h4 class="list-group-item-heading">Resources</h4>
+                    <p class="list-group-item-text"></p>
+                </a></li>
+                <li class="disabled"><a href="#step-4">
+                    <h4 class="list-group-item-heading">Transport</h4>
+                    <p class="list-group-item-text"></p>
+                </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+@if(Session::has('message')) <div class="alert alert-info"> {{Session::get('message')}} </div> @endif
+{!! Form::open(['url' => 'forms/project/submit','class' => 'container']) !!}
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+    <div class="row setup-content" id="step-1">
+        <div class="col-xs-12">
+            <div class="col-md-12 well text-center">
+                <h1> Create a new Project</h1>
+                <div class="container col-xs-12">
+                    <div class="row clearfix">
+                        <div class="col-md-12 column">
+                            <table class="table table-bordered table-hover" id="tab_logic">
+                                <tr>
+                                    <th>
+                                        {{Form::label('projectname', 'Project Name')}}
+                                    </th>
+									<td>
+										{{Form::text('projectname', '',['class' => 'form-control', 'placeholder'=>'Project Name'])}}
+									</td>
+								</tr>
+								<tr>
+                                    <th>
+                                        {{Form::label('projectype', 'Project Type')}}
+                                    </th>
+                                    <td>
+                                    {{Form::checkbox('projecttype','supply_water')}}Supply Water<br>
+                                    {{Form::checkbox('projecttype','supply_meals')}}Supply meal<br>
+                                    {{Form::checkbox('projecttype','cleaning')}}cleaning<br>
+                                    {{Form::checkbox('projecttype','school_books')}}School books<br>
+                                    {{Form::checkbox('projecttype','health_camp')}}Health camp<br>
+                                    {{Form::checkbox('projecttype','education')}}Education<br>
+                                    {{Form::checkbox('projecttype','counseling')}}Counseling<br>
+                                    <input type="checkbox" name="typec" onclick="show();" value="Others">Others<br>
+
+                                    {{Form::text('other_project_type','',['class' => 'form-control','placeholder'=>'Other Project type','id' => 'area','style' => 'display: none;'])}}
+                                        
+                                    </td>
+								</tr>
+								<tr>
+                                    <th>
+                                        {{Form::label('projectdescription', 'Project Description')}}
+                                    </th>
+									<td>
+                                        {{Form::textarea('description','',['class'=>'form-control','placeholder'=>'Description',
+                                        'rows'=>'5'])}}
+										
+									</td>
+                                </tr>
+								<tr>
+                                    <th>
+                                        {{Form::label('location', 'Location')}}
+                                    </th>
+									<td>
+                                        {{Form::text('location', '',['class' => 'form-control', 'placeholder'=>'Location'])}}
+									</td>
+                                </tr>
+								<tr>
+                                    <th>
+                                        {{Form::label('LeaderName', 'Leader Name')}}
+                                    </th>
+									<td>
+                                        {{Form::text('leadername', '',['class' => 'form-control', 'placeholder'=>'Leader Name'])}}
+									</td>
+                                </tr>
+								<tr>
+                                    <th>
+                                        {{Form::label('Leaderemail', 'Leader Email')}}
+                                    </th>
+									<td>
+                                        {{{ Form::email('leaderemail','',['placeholder'=>'Email','class' => 'form-control'])}}}
+									</td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        {{Form::label('Leadercontact', 'Leader Contact')}}
+                                    </th>
+									<td>
+                                        {{Form::text('leadercontact', '',['class' => 'form-control', 'placeholder'=>'Leader Contact'])}}
+									</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    {{Form::submit('Add Deatails',['id'=>'add_row','class'=>'btn btn-success pull-left'])}}
+
+                    {{ Form::reset('Delete Details',['id'=>'delete_row','class'=>'btn btn-danger pull-right'])}}
+                    
+                </div>
+
+            </div>
+        </div>
+    </div>
+{!! Form::close() !!}
+
+
+<script src="jquery.min.js"></script>
+<script src="flat.ui.js"></script>
+<script>
+
+    // Activate Next Step
+
+    $(document).ready(function() {
+
+        var navListItems = $('ul.setup-panel li a'),
+                allWells = $('.setup-content');
+
+        allWells.hide();
+
+        navListItems.click(function(e)
+        {
+            e.preventDefault();
+            var $target = $($(this).attr('href')),
+                    $item = $(this).closest('li');
+
+            if (!$item.hasClass('disabled')) {
+                navListItems.closest('li').removeClass('active');
+                $item.addClass('active');
+                allWells.hide();
+                $target.show();
+            }
+        });
+
+        $('ul.setup-panel li.active a').trigger('click');
+
+        // DEMO ONLY //
+        $('#activate-step-2').on('click', function(e) {
+            $('ul.setup-panel li:eq(1)').removeClass('disabled');
+            $('ul.setup-panel li a[href="#step-2"]').trigger('click');
+            $(this).remove();
+        })
+
+        $('#activate-step-3').on('click', function(e) {
+            $('ul.setup-panel li:eq(2)').removeClass('disabled');
+            $('ul.setup-panel li a[href="#step-3"]').trigger('click');
+            $(this).remove();
+        })
+
+        $('#activate-step-4').on('click', function(e) {
+            $('ul.setup-panel li:eq(3)').removeClass('disabled');
+            $('ul.setup-panel li a[href="#step-4"]').trigger('click');
+            $(this).remove();
+        })
+
+        $('#activate-step-3').on('click', function(e) {
+            $('ul.setup-panel li:eq(2)').removeClass('disabled');
+            $('ul.setup-panel li a[href="#step-3"]').trigger('click');
+            $(this).remove();
+        })
+    });
+
+</script>
+
+</body>
+</html>
